@@ -43,7 +43,10 @@ def print_with_template(template, overlay):
         if template[i] == overlay[i]:
             print(template[i], end='')
         else:
-            print('\033[1;31m' + template[i] + '\033[1;32m', end='')
+            char = template[i]
+            if char == ' ':
+                char = '_'
+            print('\033[1;31m' + char + '\033[1;32m', end='')
 
     print('\033[m', end='')
     print(template[len(overlay):])
