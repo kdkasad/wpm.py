@@ -1,13 +1,9 @@
 import platform
 import sys
 import termios
+import time
 from math import ceil, floor
 from os import get_terminal_size
-
-def finish():
-    disable_raw_mode()
-    print()
-    print("You're done!")
 
 def disable_raw_mode():
     """
@@ -66,6 +62,9 @@ down great fact tell change be such'
 
     enable_raw_mode()
 
+    # start timer
+    start_time = time.time()
+
     # program loop
     while True:
         # calculate cursor movement
@@ -103,7 +102,19 @@ down great fact tell change be such'
         if linesdown > 0:
             print('\033[{}A'.format(linesdown), end='')
     
-    finish()
+    # stop timer
+    end_time = time.time()
+    time_elapsed = end_time - start_time
+
+    # count words in text
+    words = len(TEXT.split(" "))
+    
+    disable_raw_mode()
+    print()
+    print("You're done!")
+    print("Words typed: {}".format(words))
+    print("Time elapsed: {} seconds".format(round(time_elapsed, 2)))
+    print("Words per minute: {}".format(round(words / (time_elapsed / 60))))
 
 if __name__ == '__main__':
     main()
