@@ -84,7 +84,12 @@ def main():
     if platform.system() != 'Linux':
         print('Only Linux is supported currently')
 
-    text = get_random_text()
+    # get text
+    text = ''
+    if len(sys.argv) > 1:
+        text = " ".join(sys.argv[1:])
+    else:
+        text = get_random_text()
 
     # user has not typed anything yet
     typed = ''
