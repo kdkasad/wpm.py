@@ -60,6 +60,23 @@ def enable_raw_mode():
     tattr[3] &= ~(termios.ECHO | termios.ICANON)
     termios.tcsetattr(sys.stdin.fileno(), termios.TCSAFLUSH, tattr)
 
+def print_help():
+    help_text = \
+    """
+wpm - typing speed test
+
+Usage:
+    PROGNAME [options] [text...]
+
+    Options:
+        -h, --help      print usage information
+
+    Text:
+        any positional arguments will be combined into a string which
+        will be used as the text to type
+    """.strip().replace("PROGNAME", sys.argv[0])
+    print(help_text)
+
 def print_with_template(template, overlay):
     """
     Print text overlayed on a template
@@ -80,6 +97,11 @@ def print_with_template(template, overlay):
     # print('\033[1;32m' + template[:len(overlay)] + '\033[m' + template[len(overlay):])
 
 def main():
+    # Check for help flags
+    if len(sys.argv) > 1 and (sys.argv[1] == '-h' or sys.argv[1] == '--help'):
+        print_help()
+        exit()
+
     # Check OS
     if platform.system() != 'Linux':
         print('Only Linux is supported currently')
