@@ -62,8 +62,8 @@ down great fact tell change be such'
 
     enable_raw_mode()
 
-    # start timer
-    start_time = time.time()
+    # initialize timer
+    start_time = 0
 
     # program loop
     while True:
@@ -90,6 +90,10 @@ down great fact tell change be such'
 
         # read one character
         c = sys.stdin.read(1)
+
+        # start timer on first letter
+        if start_time == 0:
+            start_time = time.time()
 
         # if character is a backspace, delete one character from `typed`
         if c == chr(127):
