@@ -143,8 +143,9 @@ def main():
     words = len(text.split(" "))
     
     disable_raw_mode()
-    print()
-    print("You're done!")
+
+    # print information
+    print('\n')
     print("Words typed: {}".format(words))
     print("Time elapsed: {} seconds".format(round(time_elapsed, 2)))
     print("Words per minute: {}".format(round(words / (time_elapsed / 60))))
