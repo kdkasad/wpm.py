@@ -1,8 +1,8 @@
 import platform
 import sys
 import termios
-from os import get_terminal_size
 from math import ceil, floor
+from os import get_terminal_size
 
 def finish():
     disable_raw_mode()
