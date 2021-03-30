@@ -151,4 +151,7 @@ def main():
     print("Words per minute: {}".format(round(words / (time_elapsed / 60))))
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        pass
