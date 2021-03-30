@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 wpm.py - typing speed test
 Copyright (C) 2021  Kian Kasad
