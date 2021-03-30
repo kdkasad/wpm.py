@@ -18,12 +18,23 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import json
 import platform
+import random
 import sys
 import termios
 import time
 from math import ceil, floor
 from os import get_terminal_size
+
+def get_random_text():
+    """
+    Get a random text from texts.json
+    """
+    list = []
+    with open('texts.json', 'r') as file:
+        list = json.load(file)
+    return random.choice(list)[0]
 
 def disable_raw_mode():
     """
@@ -73,9 +84,7 @@ def main():
     if platform.system() != 'Linux':
         print('Only Linux is supported currently')
 
-    TEXT = 'make also she hand but only off each great same must such head \
-present might of those down end who good stand also govern help during which \
-down great fact tell change be such'
+    text = get_random_text()
 
     # user has not typed anything yet
     typed = ''
@@ -89,7 +98,7 @@ down great fact tell change be such'
     while True:
         # calculate cursor movement
         width, _ = get_terminal_size(sys.stdout.fileno())
-        linesup = ceil(len(TEXT) / width)
+        linesup = ceil(len(text) / width)
         linesdown = floor(len(typed) / width)
         charsover = len(typed) % width
 
@@ -97,7 +106,7 @@ down great fact tell change be such'
         print('\r\033[2K', end='')
 
         # print text
-        print_with_template(TEXT, typed)
+        print_with_template(text, typed)
 
         # move cursor to next untyped letter
         if linesup - linesdown > 0:
@@ -105,7 +114,7 @@ down great fact tell change be such'
         if charsover > 0:
             print('\033[{}C'.format(charsover), end='')
 
-        if typed == TEXT:
+        if typed == text:
             break
 
         # read one character
@@ -131,7 +140,7 @@ down great fact tell change be such'
     time_elapsed = end_time - start_time
 
     # count words in text
-    words = len(TEXT.split(" "))
+    words = len(text.split(" "))
     
     disable_raw_mode()
     print()
