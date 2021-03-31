@@ -22,11 +22,20 @@ import json
 import platform
 import random
 import termios
+from argparse import ArgumentParser
 from pathlib import Path
 from sys import stdin, stdout, argv
 from time import time
 from math import ceil, floor
 from os import get_terminal_size
+
+def parse_args():
+    """
+    Parse command-line arguments
+    """
+    ap = ArgumentParser()
+    ap.add_argument('text', nargs='*')
+    return ap.parse_args()
 
 def get_random_text():
     """
@@ -102,10 +111,7 @@ def print_with_template(template, overlay):
     # print('\033[1;32m' + template[:len(overlay)] + '\033[m' + template[len(overlay):])
 
 def main():
-    # Check for help flags
-    if len(argv) > 1 and (argv[1] == '-h' or argv[1] == '--help'):
-        print_help()
-        exit()
+    args = parse_args()
 
     # Check OS
     if platform.system() != 'Linux':
@@ -113,8 +119,8 @@ def main():
 
     # get text
     text = ''
-    if len(argv) > 1:
-        text = " ".join(argv[1:])
+    if len(args.text):
+        text = ' '.join(args.text)
     else:
         text = get_random_text()
 
