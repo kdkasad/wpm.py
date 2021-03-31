@@ -22,6 +22,7 @@ import json
 import platform
 import random
 import termios
+from pathlib import Path
 from sys import stdin, stdout, argv
 from time import time
 from math import ceil, floor
@@ -32,7 +33,8 @@ def get_random_text():
     Get a random text from texts.json
     """
     list = []
-    with open('texts.json', 'r') as file:
+    filepath = Path(__file__).parent / 'texts.json'
+    with open(filepath, 'r') as file:
         list = json.load(file)
     return random.choice(list)[0]
 
