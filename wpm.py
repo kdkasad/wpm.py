@@ -65,7 +65,10 @@ def enable_raw_mode():
 def print_help():
     help_text = \
     """
-wpm - typing speed test
+wpm.py - typing speed test
+
+Copyright (C) 2021 Kian Kasad
+See the provided LICENSE file for copyright information
 
 Usage:
     PROGNAME [options] [text...]
