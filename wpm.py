@@ -135,6 +135,12 @@ def main():
         # print text
         print_with_template(text, typed)
 
+        # print elapsed time
+        elapsed_time = (time() - start_time if start_time != 0 else 0)
+        print('\033[2B\r\033[2K', end='')
+        print('{}s'.format(round(elapsed_time, 2)), end='')
+        print('\033[2A', end='')
+
         # move cursor to next untyped letter
         if linesup - linesdown > 0:
             print('\033[{}F\r'.format(linesup - linesdown), end='')
