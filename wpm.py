@@ -21,9 +21,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import json
 import platform
 import random
-import sys
 import termios
-import time
+from sys import stdin, stdout, argv
+from time import time
 from math import ceil, floor
 from os import get_terminal_size
 
@@ -42,9 +42,9 @@ def disable_raw_mode():
     """
 
     # returned structure is [iflag, oflag, cflag, lflag, ispeed, ospeed, cc]
-    tattr = termios.tcgetattr(sys.stdin.fileno())
+    tattr = termios.tcgetattr(stdin.fileno())
     tattr[3] |= (termios.ECHO | termios.ICANON)
-    termios.tcsetattr(sys.stdin.fileno(), termios.TCSAFLUSH, tattr)
+    termios.tcsetattr(stdin.fileno(), termios.TCSAFLUSH, tattr)
 
 
 def enable_raw_mode():
@@ -56,9 +56,9 @@ def enable_raw_mode():
     """
 
     # returned structure is [iflag, oflag, cflag, lflag, ispeed, ospeed, cc]
-    tattr = termios.tcgetattr(sys.stdin.fileno())
+    tattr = termios.tcgetattr(stdin.fileno())
     tattr[3] &= ~(termios.ECHO | termios.ICANON)
-    termios.tcsetattr(sys.stdin.fileno(), termios.TCSAFLUSH, tattr)
+    termios.tcsetattr(stdin.fileno(), termios.TCSAFLUSH, tattr)
 
 def print_help():
     help_text = \
@@ -74,7 +74,7 @@ Usage:
     Text:
         any positional arguments will be combined into a string which
         will be used as the text to type
-    """.strip().replace("PROGNAME", sys.argv[0])
+    """.strip().replace("PROGNAME", argv[0])
     print(help_text)
 
 def print_with_template(template, overlay):
@@ -98,7 +98,7 @@ def print_with_template(template, overlay):
 
 def main():
     # Check for help flags
-    if len(sys.argv) > 1 and (sys.argv[1] == '-h' or sys.argv[1] == '--help'):
+    if len(argv) > 1 and (argv[1] == '-h' or argv[1] == '--help'):
         print_help()
         exit()
 
@@ -108,8 +108,8 @@ def main():
 
     # get text
     text = ''
-    if len(sys.argv) > 1:
-        text = " ".join(sys.argv[1:])
+    if len(argv) > 1:
+        text = " ".join(argv[1:])
     else:
         text = get_random_text()
 
@@ -124,7 +124,7 @@ def main():
     # program loop
     while True:
         # calculate cursor movement
-        width, _ = get_terminal_size(sys.stdout.fileno())
+        width, _ = get_terminal_size(stdout.fileno())
         linesup = ceil(len(text) / width)
         linesdown = floor(len(typed) / width)
         charsover = len(typed) % width
@@ -145,11 +145,11 @@ def main():
             break
 
         # read one character
-        c = sys.stdin.read(1)
+        c = stdin.read(1)
 
         # start timer on first letter
         if start_time == 0:
-            start_time = time.time()
+            start_time = time()
 
         # if character is a backspace, delete one character from `typed`
         if c == chr(127):
@@ -163,7 +163,7 @@ def main():
             print('\033[{}A'.format(linesdown), end='')
     
     # stop timer
-    end_time = time.time()
+    end_time = time()
     time_elapsed = end_time - start_time
 
     # count words in text
