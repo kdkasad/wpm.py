@@ -137,10 +137,21 @@ def main():
         # print text
         print_with_template(text, typed)
 
-        # print elapsed time
-        elapsed_time = (time() - start_time if start_time != 0 else 0)
+        elapsed_time = 0
+        words = 0
+        wpm = 0
+        if start_time > 0:
+            elapsed_time = time() - start_time
+            words = len(typed.split(' '))
+            wpm = words / (elapsed_time / 60)
+
+        # print elapsed time, words, and WPM
         print('\033[2B\r\033[2K', end='')
-        print('{}s'.format(round(elapsed_time, 2)), end='')
+        print('{}s - {} words - {} WPM'.format(
+            round(elapsed_time, 2),
+            words,
+            round(wpm),
+        ), end='')
         print('\033[2A', end='')
 
         # move cursor to next untyped letter
