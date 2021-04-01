@@ -35,6 +35,7 @@ def parse_args():
     """
     ap = ArgumentParser()
     ap.add_argument('text', nargs='*')
+    ap.add_argument('-e', '--ignore-errors', action='store_true')
     return ap.parse_args()
 
 def get_random_text():
@@ -180,8 +181,13 @@ def main():
         # flush output
         stdout.flush()
 
-        if typed == text:
-            break
+        # if done, end loop
+        if args.ignore_errors:
+            if len(typed) == len(text):
+                break
+        else:
+            if typed == text:
+                break
 
         # read one character
         c = stdin.read(1)
