@@ -169,6 +169,9 @@ def main():
         if charsover > 0:
             print('\033[{}C'.format(charsover), end='')
 
+        # flush output
+        stdout.flush()
+
         if typed == text:
             break
 
