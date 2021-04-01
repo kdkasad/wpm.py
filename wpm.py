@@ -96,8 +96,9 @@ def print_with_template(template, overlay):
     Print text overlayed on a template
     """
 
+    # print combined portion of template/overlay
     print('\033[1;32m', end='')
-    for i in range(len(overlay)):
+    for i in range(min(len(template), len(overlay))):
         if template[i] == overlay[i]:
             print(template[i], end='')
         else:
@@ -106,9 +107,16 @@ def print_with_template(template, overlay):
                 char = '_'
             print('\033[1;31m' + char + '\033[1;32m', end='')
 
-    print('\033[m', end='')
-    print(template[len(overlay):])
-    # print('\033[1;32m' + template[:len(overlay)] + '\033[m' + template[len(overlay):])
+    # finissh printing remaining template/overlay
+    if len(template) > len(overlay):
+        # if template is longer, print it with no style
+        print('\033[m', end='')
+        print(template[len(overlay):])
+    else:
+        # if overlay is longer, print extra characters as red underscores
+        print('\033[1;31m', end='')
+        print('_' * (len(overlay) - len(template)))
+        print('\033[m', end='')
 
 def main():
     args = parse_args()
