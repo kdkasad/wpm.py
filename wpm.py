@@ -24,8 +24,9 @@ import random
 import termios
 from argparse import ArgumentParser
 from pathlib import Path
+from select import poll, POLLIN
 from sys import stdin, stdout, argv
-from time import time
+from time import time, sleep
 from math import ceil, floor
 from os import get_terminal_size
 
@@ -119,6 +120,18 @@ def print_with_template(template, overlay):
         print('_' * (len(overlay) - len(template)))
         print('\033[m', end='')
 
+def register_poll():
+    po = poll()
+    po.register(stdin.fileno(), POLLIN)
+    return po
+
+def input_available(pollobj):
+    result = pollobj.poll(0)
+    for tup in result:
+        if tup[0] == stdin.fileno() and tup[1] & POLLIN == 1:
+            return True
+    return False
+
 def main():
     args = parse_args()
 
@@ -138,10 +151,14 @@ def main():
 
     enable_raw_mode()
 
+    # register poll(2)
+    pollobj = register_poll()
+
     # initialize timer
     start_time = 0
 
     # program loop
+    got_input = True
     while True:
         # calculate cursor movement
         width, _ = get_terminal_size(stdout.fileno())
@@ -149,11 +166,14 @@ def main():
         linesdown = floor(len(typed) / width)
         charsover = len(typed) % width
 
-        # clear line
-        print('\r\033[2K', end='')
+        if got_input:
+            # clear line
+            print('\r\033[2K', end='')
 
-        # print text
-        print_with_template(text, typed)
+            # print text
+            print_with_template(text, typed)
+        else:
+            print('\033[{}B'.format(linesup), end='')
 
         elapsed_time = 0
         words = 0
@@ -182,38 +202,47 @@ def main():
         stdout.flush()
 
         # if done, end loop
-        if args.ignore_errors:
-            if len(typed) == len(text):
-                break
+        if got_input:
+            if args.ignore_errors:
+                if len(typed) == len(text):
+                    break
+            else:
+                if typed == text:
+                    break
+
+        # check if input is available
+        if input_available(pollobj):
+            got_input = True
+
+            # read one character
+            c = stdin.read(1)
+
+            # start timer on first letter
+            if start_time == 0:
+                start_time = time()
+
+            # if character is a backspace, delete one character from `typed`
+            if c == chr(127):
+                typed = typed[:-1]
+            # otherwise, append the character to `typed`
+            else:
+                typed += c
         else:
-            if typed == text:
-                break
+            got_input = False
 
-        # read one character
-        c = stdin.read(1)
-
-        # start timer on first letter
-        if start_time == 0:
-            start_time = time()
-
-        # if character is a backspace, delete one character from `typed`
-        if c == chr(127):
-            typed = typed[:-1]
-        # otherwise, append the character to `typed`
-        else:
-            typed += c
-        
         # move back to start of text
         if linesdown > 0:
             print('\033[{}A'.format(linesdown), end='')
-    
+
+        sleep(0.01)
+
     # stop timer
     end_time = time()
     time_elapsed = end_time - start_time
 
     # count words in text
     words = len(text.split(" "))
-    
+
     disable_raw_mode()
 
     # print information
