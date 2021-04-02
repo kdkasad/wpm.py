@@ -35,8 +35,8 @@ def parse_args():
     Parse command-line arguments
     """
     ap = ArgumentParser()
-    ap.add_argument('text', nargs='*')
-    ap.add_argument('-e', '--ignore-errors', action='store_true')
+    ap.add_argument('text', nargs='*', help='text to be typed')
+    ap.add_argument('-e', '--ignore-errors', action='store_true', help='finish even if mistakes were made')
     return ap.parse_args()
 
 def get_random_text():
