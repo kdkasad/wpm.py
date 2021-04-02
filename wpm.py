@@ -165,10 +165,10 @@ def main():
 
         # print elapsed time, words, and WPM
         print('\033[2B\r\033[2K', end='')
-        print('{}s - {} words - {} WPM'.format(
-            round(elapsed_time, 2),
+        print('{:0.2f}s - {} words - {:0.0f} WPM'.format(
+            elapsed_time,
             words,
-            round(wpm),
+            wpm,
         ), end='')
         print('\033[2A', end='')
 
