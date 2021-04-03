@@ -19,7 +19,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import json
-import platform
 import random
 import termios
 from argparse import ArgumentParser
@@ -134,10 +133,6 @@ def input_available(pollobj):
 
 def main():
     args = parse_args()
-
-    # Check OS
-    if platform.system() != 'Linux':
-        print('Only Linux is supported currently')
 
     # get text
     text = ''
