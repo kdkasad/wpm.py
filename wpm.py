@@ -2,7 +2,7 @@
 
 """
 wpm.py - typing speed test
-Copyright (C) 2021  Kian Kasad
+Copyright (C) 2021-2022  Kian Kasad
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
