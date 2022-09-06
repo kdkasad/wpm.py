@@ -29,14 +29,20 @@ from time import time, sleep
 from math import ceil, floor
 from os import get_terminal_size
 
+
 def parse_args():
     """
     Parse command-line arguments
     """
     ap = ArgumentParser()
     ap.add_argument('text', nargs='*', help='text to be typed')
-    ap.add_argument('-e', '--ignore-errors', action='store_true', help='finish even if mistakes were made')
+    ap.add_argument(
+        '-e',
+        '--ignore-errors',
+        action='store_true',
+        help='finish even if mistakes were made')
     return ap.parse_args()
+
 
 def get_random_text():
     """
@@ -47,6 +53,7 @@ def get_random_text():
     with open(filepath, 'r') as file:
         list = json.load(file)
     return random.choice(list)[0]
+
 
 def disable_raw_mode():
     """
@@ -72,9 +79,10 @@ def enable_raw_mode():
     tattr[3] &= ~(termios.ECHO | termios.ICANON)
     termios.tcsetattr(stdin.fileno(), termios.TCSAFLUSH, tattr)
 
+
 def print_help():
     help_text = \
-    """
+        """
 wpm.py - typing speed test
 
 Copyright (C) 2021 Kian Kasad
@@ -91,6 +99,7 @@ Usage:
         will be used as the text to type
     """.strip().replace("PROGNAME", argv[0])
     print(help_text)
+
 
 def print_with_template(template, overlay):
     """
@@ -119,10 +128,12 @@ def print_with_template(template, overlay):
         print('_' * (len(overlay) - len(template)))
         print('\033[m', end='')
 
+
 def register_poll():
     po = poll()
     po.register(stdin.fileno(), POLLIN)
     return po
+
 
 def input_available(pollobj):
     result = pollobj.poll(0)
@@ -130,6 +141,7 @@ def input_available(pollobj):
         if tup[0] == stdin.fileno() and tup[1] & POLLIN == 1:
             return True
     return False
+
 
 def main():
     args = parse_args()
@@ -245,6 +257,7 @@ def main():
     print("Words typed: {}".format(words))
     print("Time elapsed: {} seconds".format(round(time_elapsed, 2)))
     print("Words per minute: {}".format(round(words / (time_elapsed / 60))))
+
 
 if __name__ == '__main__':
     try:
